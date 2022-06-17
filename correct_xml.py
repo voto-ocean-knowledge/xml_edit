@@ -106,8 +106,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Add dataset to ERDDAP')
     parser.add_argument('glider', type=int, help='glider number, e.g. 70')
     parser.add_argument('mission', type=int, help='Mission number, e.g. 23')
-    parser.add_argument('kind', type=str, help='Kind of dataset, must be nrt or complete')
+    parser.add_argument('kind', type=str, help='Kind of dataset, must be nrt or delayed')
     args = parser.parse_args()
-    if args.kind not in ['nrt', 'complete']:
-        raise ValueError('kind must be nrt or complete')
+    if args.kind not in ['nrt', 'delayed']:
+        raise ValueError('kind must be nrt or delayed')
     update_doc(args.glider, args.mission, args.kind)
