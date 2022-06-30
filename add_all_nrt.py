@@ -1,3 +1,4 @@
+import subprocess
 from correct_xml import update_doc
 import logging
 import pathlib
@@ -16,6 +17,7 @@ def proc_all_nrt():
                 _log.warning(f"Could not process {mission_path}")
     for glider, mission in glidermissions:
         _log.info(f"Adding SEA{glider} M{mission}")
+        subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_nrt.sh", glider, mission])
         update_doc(glider, mission, "nrt")
 
 
