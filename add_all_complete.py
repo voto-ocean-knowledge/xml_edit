@@ -5,7 +5,7 @@ _log = logging.getLogger(__name__)
 
 
 def proc_all_nrt():
-    glider_paths = list(pathlib.Path("/media/data/data_dir//nrt").glob("SEA*"))
+    glider_paths = list(pathlib.Path("/media/data/data_dir/complete_mission").glob("SEA*"))
     glidermissions = []
     for glider_path in glider_paths:
         mission_paths = glider_path.glob("M*")
@@ -18,11 +18,11 @@ def proc_all_nrt():
     _log.info(f"found {len(glidermissions)} glider missions to add")
     for glider, mission in glidermissions:
         _log.info(f"Adding SEA{glider} M{mission}")
-        subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_nrt.sh", str(glider), str(mission)])
+        subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
 
 
 if __name__ == '__main__':
-    logf = f'/media/data/log/all_nrt.log'
+    logf = f'/media/data/log/all_complete.log'
     logging.basicConfig(filename=logf,
                         filemode='a',
                         format='%(asctime)s %(levelname)-8s %(message)s',
@@ -30,5 +30,5 @@ if __name__ == '__main__':
                         datefmt='%Y-%m-%d %H:%M:%S')
     _log.info("Start add all nrt datasets to xml")
     proc_all_nrt()
-    _log.info("Completed add all nrt datasets to xml")
+    _log.info("Completed add all complete datasets to xml")
 
