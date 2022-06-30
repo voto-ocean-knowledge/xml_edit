@@ -15,16 +15,17 @@ def proc_all_nrt():
                 glidermissions.append((int(glider_path.parts[-1][3:]), int(mission_path.parts[-1][1:])))
             except:
                 _log.warning(f"Could not process {mission_path}")
+
+    _log.info(f"found {len(glidermissions)} glider missions to add")
     for glider, mission in glidermissions:
         _log.info(f"Adding SEA{glider} M{mission}")
-        subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_nrt.sh", glider, mission])
-        update_doc(glider, mission, "nrt")
+        subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_nrt.sh", str(glider), str(mission)])
 
 
 if __name__ == '__main__':
     logf = f'/media/data/log/all_nrt.log'
     logging.basicConfig(filename=logf,
-                        filemode='w',
+                        filemode='a',
                         format='%(asctime)s %(levelname)-8s %(message)s',
                         level=logging.INFO,
                         datefmt='%Y-%m-%d %H:%M:%S')

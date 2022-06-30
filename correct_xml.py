@@ -119,7 +119,7 @@ if __name__ == '__main__':
         raise ValueError('kind must be nrt or delayed')
     logf = f'/media/data/log/{args.kind}.log'
     logging.basicConfig(filename=logf,
-                        filemode='w',
+                        filemode='a',
                         format='%(asctime)s %(levelname)-8s %(message)s',
                         level=logging.INFO,
                         datefmt='%Y-%m-%d %H:%M:%S')
