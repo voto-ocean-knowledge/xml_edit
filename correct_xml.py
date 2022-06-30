@@ -1,5 +1,8 @@
 import xml.etree.ElementTree as ET
 import argparse
+import logging
+_log = logging.getLogger(__name__)
+
 document_loc = "/home/ubuntu/xml_edit/original.xml"
 
 
@@ -24,7 +27,12 @@ def check_for_dataset(dataset_id):
         if child.attrib:
             if "datasetID" in child.attrib:
                 if child.attrib["datasetID"] == dataset_id:
-                    raise ValueError(f"dataset {dataset_id} already present. Remove it from datasets.xml")
+                    # remove entry from datasets.xml
+                    root.remove(child)
+                    _log.warning(f"dataset {dataset_id} already present. Removing it from datasets.xml")
+    ET.indent(tree, '  ')
+    tree.write("/media/data/customdocker/customvolumes/erddapContent/datasets.xml", encoding="utf-8",
+               xml_declaration=True)
 
 
 def update_doc(glider, mission, kind):
@@ -57,7 +65,6 @@ def update_doc(glider, mission, kind):
                     profile_index = True
                 if profile_index:
                     if grand_child.tag == "addAttributes":
-                        print("got again")
                         child.remove(grand_child)
                         new_add = ET.Element("addAttributes")
                         add_element(new_add, "ioos_category", "Identifier")
@@ -110,4 +117,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.kind not in ['nrt', 'delayed']:
         raise ValueError('kind must be nrt or delayed')
+    logf = f'/media/data/log/{args.kind}.log'
+    logging.basicConfig(filename=logf,
+                        filemode='w',
+                        format='%(asctime)s %(levelname)-8s %(message)s',
+                        level=logging.INFO,
+                        datefmt='%Y-%m-%d %H:%M:%S')
+    _log.info(f"Start add dataset SEA{args.glider} M{args.mission} to xml")
     update_doc(args.glider, args.mission, args.kind)
+    _log.info(f"Complete add dataset SEA{args.glider} M{args.mission} to xml")
