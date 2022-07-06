@@ -17,7 +17,12 @@ def proc_all_nrt():
 
     _log.info(f"found {len(glidermissions)} glider missions to add")
     for glider, mission in glidermissions:
-        _log.info(f"Adding SEA{glider} M{mission}")
+        nc = list(pathlib.Path("/media/data/data_dir/complete_mission/SEA{glider}/M{mission}").glob("*.nc"))[0]
+        size = nc.lstat().st_size
+        if size > 3e9:
+            _log.warning(f"SEA{glider} M{mission} is too large! {size/1e9} GB. SKipping")
+            continue
+        _log.info(f"Adding SEA{glider} M{mission}. Size {size/1e9} GB")
         subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
 
 
@@ -28,7 +33,7 @@ if __name__ == '__main__':
                         format='%(asctime)s %(levelname)-8s %(message)s',
                         level=logging.INFO,
                         datefmt='%Y-%m-%d %H:%M:%S')
-    _log.info("Start add all nrt datasets to xml")
+    _log.info("Start add all complete datasets to xml")
     proc_all_nrt()
     _log.info("Completed add all complete datasets to xml")
 
