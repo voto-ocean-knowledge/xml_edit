@@ -20,6 +20,21 @@ def add_element(tree, name, text):
     tree.append(new)
 
 
+def sort_children_by(parent):
+    parent[:] = sorted(parent, key=lambda child: child.get("datasetID"))
+
+
+def sort_by_datasetid(root):
+    data_children = []
+    for child in root.findall('dataset'):
+        data_children.append(child)
+        root.remove(child)
+    sort_children_by(data_children)
+    for child in data_children:
+        root.append(child)
+    return root
+
+
 def check_for_dataset(dataset_id):
     tree = ET.parse("/media/data/customdocker/customvolumes/erddapContent/datasets.xml")
     root = tree.getroot()
@@ -94,6 +109,8 @@ def update_doc(glider, mission, kind):
     tree_ds = ET.parse("/media/data/customdocker/customvolumes/erddapContent/datasets.xml")
     root_ds = tree_ds.getroot()
     root_ds.append(root)
+    # sort datasets to keep file organisation consistent
+    sort_by_datasetid(root_ds)
     ET.indent(tree_ds, '  ')
     tree_ds.write("/media/data/customdocker/customvolumes/erddapContent/datasets.xml", encoding="utf-8",
                   xml_declaration=True)
