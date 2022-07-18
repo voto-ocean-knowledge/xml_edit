@@ -21,7 +21,7 @@ def add_element(tree, name, text):
 
 
 def sort_children_by(parent):
-    parent[:] = sorted(parent, key=lambda child: child.get("datasetID"))
+    parent[:] = sorted(parent, key=lambda child: child.get("datasetID"), reverse=True)
 
 
 def sort_by_datasetid(root):
