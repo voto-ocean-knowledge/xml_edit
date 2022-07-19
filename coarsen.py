@@ -47,8 +47,9 @@ def coarsen_big():
         output_dir = pathlib.Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries_1s")
         og_nc = list(pathlib.Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries").glob("*.nc"))[0]
         if output_dir.exists:
-            nc = list(output_dir.glob("*.nc"))[0]
-            if nc.exists():
+            nc_list = list(output_dir.glob("*.nc"))
+            if nc_list:
+                nc = nc_list[0]
                 _log.info(f"Original nc modified at {simple_timestamp(og_nc.lstat().st_atime)}")
                 _log.info(f"Coarse nc modified at {simple_timestamp(nc.lstat().st_atime)}")
                 if og_nc.lstat().st_atime > nc.lstat().st_atime:
