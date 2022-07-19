@@ -31,12 +31,14 @@ def coarsen(glider, mission):
 
 def coarsen_big():
     df_sizes = pd.read_csv("/media/data/log/sizes.csv")
-    for row in df_sizes.iterrows():
+    for i, row in df_sizes.iterrows():
+        glider = int(row.glider)
+        mission = int(row.mission)
         size = row.size_gb
-        _log.info(f"SEA0{row.glider} M{row.mission} {size}GB")
+        _log.info(f"SEA0{glider} M{mission} {size}GB")
         if size > 4:
             _log.info("start coarsen")
-            coarsen(row.glider, row.mission)
+            coarsen(glider, mission)
     
 if __name__ == '__main__':
     logf = f'/media/data/log/coarsen.log'
@@ -48,4 +50,3 @@ if __name__ == '__main__':
     _log.info("Start dataset coarsening")
     coarsen_big()
     _log.info("Completed coarsening")
-    
