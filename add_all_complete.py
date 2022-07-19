@@ -25,11 +25,20 @@ def proc_all_nrt():
         gliders.append(glider)
         missions.append(mission)
         sizes.append(size/1e9)
-        if size > 3e9:
-            _log.warning(f"SEA{glider} M{mission} is too large! {size/1e9} GB. Skipping")
+        if size < 4e9:
+            _log.info(f"Adding SEA{glider} M{mission}. Size {size/1e9} GB")
+            subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
             continue
-        _log.info(f"Adding SEA{glider} M{mission}. Size {size/1e9} GB")
-        subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
+        _log.warning(f"SEA{glider} M{mission} is too large! {size/1e9} GB. Look for coarsened")
+        coarse_dir = pathlib.Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries_1s")
+        coarse_files = list(coarse_dir.glob("*.nc"))
+        if coarse_files:
+            nc_coarse = coarse_files[0]
+            size = nc_coarse.lstat().st_size
+            _log.info(f"Adding SEA{glider} M{mission} from 1s dir. Size {size / 1e9} GB")
+            subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete_1s.sh", str(glider), str(mission)])
+        else:
+            _log.warning(f"coarsened data in SEA{glider}/M{mission}/timeseries_1s not found. Skipping")
     df_sizes = pd.DataFrame({"glider": gliders, "mission": missions, "size_gb": sizes})
     df_sizes.to_csv("/media/data/log/sizes.csv", index=False)
 

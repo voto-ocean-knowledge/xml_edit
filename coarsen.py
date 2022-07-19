@@ -18,12 +18,12 @@ def coarsen(glider, mission):
     ds = ds.assign_coords(coords={"longitude": ds.longitude2})
     ds = ds.assign_coords(coords={"latitude": ds.latitude2})
     ds = ds.drop_vars(["depth2", "latitude2", "longitude2"])
-    ds.load()
     output_dir = pathlib.Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries_1s")
     if not pathlib.Path(output_dir).exists():
         pathlib.Path(output_dir).mkdir(parents=True)
     nc_name = nc.name
     output_nc = output_dir / nc_name
+    ds.load()
     ds.to_netcdf(output_nc)
     size = nc.lstat().st_size
     _log.info(f"SEA{glider} M{mission} post coarsen size {size/1e9} GB")
@@ -36,10 +36,20 @@ def coarsen_big():
         mission = int(row.mission)
         size = row.size_gb
         _log.info(f"SEA0{glider} M{mission} {size}GB")
-        if size > 4:
-            _log.info("start coarsen")
-            coarsen(glider, mission)
-    
+        if size < 4:
+            continue
+        output_dir = pathlib.Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries_1s")
+        og_nc = list(pathlib.Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries").glob("*.nc"))[0]
+        if output_dir.exists:
+            nc = list(output_dir.glob("*.nc"))[0]
+            if nc.exists():
+                if og_nc.lstat().st_atime > nc.lstat().st_atime:
+                    _log.info("No change to original nc since last coarsen. Skipping")
+                    continue
+        _log.info("start coarsen")
+        coarsen(glider, mission)
+
+
 if __name__ == '__main__':
     logf = f'/media/data/log/coarsen.log'
     logging.basicConfig(filename=logf,
