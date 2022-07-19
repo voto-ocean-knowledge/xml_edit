@@ -50,9 +50,9 @@ def coarsen_big():
             nc_list = list(output_dir.glob("*.nc"))
             if nc_list:
                 nc = nc_list[0]
-                _log.info(f"Original nc modified at {simple_timestamp(og_nc.lstat().st_atime)}")
-                _log.info(f"Coarse nc modified at {simple_timestamp(nc.lstat().st_atime)}")
-                if og_nc.lstat().st_atime > nc.lstat().st_atime:
+                _log.info(f"Original nc modified at {simple_timestamp(og_nc.stat().st_mtime)}")
+                _log.info(f"Coarse nc modified at {simple_timestamp(nc.stat().st_mtime)}")
+                if nc.stat().st_mtime > og_nc.stat().st_mtime:
                     _log.info("No change to original nc since last coarsen. Skipping")
                     continue
         _log.info("start coarsen")
