@@ -31,7 +31,7 @@ def proc_all_nrt():
         _log.info(f"Adding SEA{glider} M{mission}. Size {size/1e9} GB")
         subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
     df_sizes = pd.DataFrame({"glider": gliders, "mission": missions, "size_gb": sizes})
-    df_sizes.to_csv("/media/data/log/sizes.csv")
+    df_sizes.to_csv("/media/data/log/sizes.csv", index=False)
 
 if __name__ == '__main__':
     logf = f'/media/data/log/all_complete.log'
