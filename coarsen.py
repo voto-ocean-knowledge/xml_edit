@@ -2,7 +2,13 @@ import xarray as xr
 import pathlib
 import logging
 import pandas as pd
+from datetime import datetime, timezone
 _log = logging.getLogger(__name__)
+
+
+def simple_timestamp(mtime):
+    modified = datetime.fromtimestamp(mtime, tz=timezone.utc)
+    return str(modified)[:16]
 
 
 def coarsen(glider, mission):
@@ -25,7 +31,7 @@ def coarsen(glider, mission):
     output_nc = output_dir / nc_name
     ds.load()
     ds.to_netcdf(output_nc)
-    size = nc.lstat().st_size
+    size = output_nc.lstat().st_size
     _log.info(f"SEA{glider} M{mission} post coarsen size {size/1e9} GB")
     
 
@@ -43,6 +49,8 @@ def coarsen_big():
         if output_dir.exists:
             nc = list(output_dir.glob("*.nc"))[0]
             if nc.exists():
+                _log.info(f"Original nc modified at {simple_timestamp(og_nc.lstat().st_atime)}")
+                _log.info(f"Coarse nc modified at {simple_timestamp(nc.lstat().st_atime)}")
                 if og_nc.lstat().st_atime > nc.lstat().st_atime:
                     _log.info("No change to original nc since last coarsen. Skipping")
                     continue
