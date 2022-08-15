@@ -51,5 +51,6 @@ if __name__ == '__main__':
                         datefmt='%Y-%m-%d %H:%M:%S')
     _log.info("Start add all complete datasets to xml")
     proc_all_nrt()
+    subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/correct_permissions.sh"])
     _log.info("Completed add all complete datasets to xml")
 
