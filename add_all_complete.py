@@ -2,6 +2,7 @@ import subprocess
 import logging
 import pathlib
 import pandas as pd
+from chunker import chunk_ds
 _log = logging.getLogger(__name__)
 
 
@@ -29,18 +30,17 @@ def proc_all_nrt():
             _log.info(f"Adding SEA{glider} M{mission}. Size {size/1e9} GB")
             subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
             continue
-        _log.info(f"SEA{glider} M{mission} is too large! {size/1e9} GB. Look for coarsened")
-        coarse_dir = pathlib.Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries_1s")
+        _log.info(f"SEA{glider} M{mission} is too large! {size/1e9} GB. Look for chunked")
+        coarse_dir = pathlib.Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries_chunked")
         coarse_files = list(coarse_dir.glob("*.nc"))
-        if coarse_files:
-            nc_coarse = coarse_files[0]
-            size = nc_coarse.lstat().st_size
-            _log.info(f"Adding SEA{glider} M{mission} from 1s dir. Size {size / 1e9} GB")
-            subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete_1s.sh", str(glider), str(mission)])
-        else:
-            _log.warning(f"coarsened data in SEA{glider}/M{mission}/timeseries_1s not found. Skipping")
+        if not coarse_files:
+            _log.warning(f"coarsened data in SEA{glider}/M{mission}/timeseries_chunked not found. Chunking")
+            chunk_ds(glider, mission)
+        _log.info(f"Adding SEA{glider} M{mission} from coarse dir")
+        subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_chunked.sh", str(glider), str(mission)])
     df_sizes = pd.DataFrame({"glider": gliders, "mission": missions, "size_gb": sizes})
     df_sizes.to_csv("/media/data/log/sizes.csv", index=False)
+
 
 if __name__ == '__main__':
     logf = f'/media/data/log/all_complete.log'
