@@ -15,8 +15,9 @@ def update_proc_time(glider, mission, file_type):
     mtime = datetime.datetime.fromtimestamp(path.lstat().st_mtime)
     fn = f"/media/data/log/{file_type}.csv"
     df = pd.read_csv(fn, parse_dates=["proc_time", "erddap_time"])
-    a = [np.logical_and(df.glider == glider, df.mission == mission)]
-    if df.index[tuple(a)].any():
+    glider_mission_check = np.logical_and(df.glider == glider, df.mission == mission)
+    a = [glider_mission_check]
+    if glider_mission_check.any():
         ind = df.index[tuple(a)].values[0]
         df.at[ind, "proc_time"] = mtime
     else:
