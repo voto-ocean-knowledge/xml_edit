@@ -12,9 +12,9 @@ def update_proc_time(glider, mission, file_type):
     else:
         path_base = pathlib.Path(f"/media/data/data_dir/nrt/SEA{glider}/M{mission}/timeseries")
     path = list(path_base.glob("*.nc"))[0]
-    mtime = datetime.fromtimestamp(path.lstat().st_mtime)
+    mtime = datetime.datetime.fromtimestamp(path.lstat().st_mtime)
     fn = f"/media/data/log/{file_type}.csv"
-    df = pd.read_csv(fn)
+    df = pd.read_csv(fn, parse_dates=["proc_time", "erddap_time"])
     a = [np.logical_and(df.glider == glider, df.mission == mission)]
     if df.index[tuple(a)].any():
         ind = df.index[tuple(a)].values[0]
@@ -30,7 +30,7 @@ def update_proc_time(glider, mission, file_type):
 
 def update_erddap_time(glider, mission, file_type):
     fn = f"/media/data/log/{file_type}.csv"
-    df = pd.read_csv(fn)
+    df = pd.read_csv(fn, parse_dates=["proc_time", "erddap_time"])
     a = [np.logical_and(df.glider == glider, df.mission == mission)]
     if df.index[tuple(a)].any():
         ind = df.index[tuple(a)].values[0]
@@ -46,11 +46,11 @@ def update_erddap_time(glider, mission, file_type):
 
 def erddap_needs_update(glider, mission, file_type):
     fn = f"/media/data/log/{file_type}.csv"
-    df = pd.read_csv(fn)
+    df = pd.read_csv(fn, parse_dates=["proc_time", "erddap_time"])
     a = [np.logical_and(df.glider == glider, df.mission == mission)]
     if df.index[tuple(a)].any():
         ind = df.index[tuple(a)].values[0]
-        row = df[ind]
+        row = df.loc[ind]
         if row.proc_time > row.erddap_time:
             return True
     return False

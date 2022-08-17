@@ -25,7 +25,7 @@ def proc_all_nrt():
         _log.info(f"Check SEA{glider} M{mission}")
         _log.info("Check processing time")
         update_proc_time(glider, mission, "complete")
-        if not erddap_needs_update(mission, glider, "complete"):
+        if not erddap_needs_update(glider, mission, "complete"):
             _log.info(f"No update needed to SEA{glider} M{mission}")
             continue
         _log.info(f"Add SEA{glider} M{mission}")

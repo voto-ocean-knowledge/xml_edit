@@ -21,7 +21,7 @@ def proc_all_nrt():
         _log.info(f"Check SEA{glider} M{mission}")
         _log.info("Check processing time")
         update_proc_time(glider, mission, "nrt")
-        if erddap_needs_update(mission, glider, "nrt"):
+        if erddap_needs_update(glider, mission, "nrt"):
             _log.info(f"Add SEA{glider} M{mission}")
             subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_nrt.sh", str(glider), str(mission)])
             update_erddap_time(glider, mission, "nrt")
