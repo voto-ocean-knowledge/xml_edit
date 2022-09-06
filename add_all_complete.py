@@ -23,10 +23,8 @@ def proc_all_nrt():
     for glider, mission in glidermissions:
         mission_dir = f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries"
         _log.info(f"Check SEA{glider} M{mission}")
-        _log.info("Check processing time")
         update_proc_time(glider, mission, "complete")
         if not erddap_needs_update(glider, mission, "complete"):
-            _log.info(f"No update needed to SEA{glider} M{mission}")
             continue
         _log.info(f"Add SEA{glider} M{mission}")
         nc = list(pathlib.Path(mission_dir).glob("*.nc"))[0]
