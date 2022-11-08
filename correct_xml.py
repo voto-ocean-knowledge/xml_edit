@@ -98,7 +98,13 @@ def update_doc(glider, mission, kind):
     # re-append data variables in desired order
     for var in first_vars:
         root.append(var)
+    vars_dict = {}
     for var in data_vars:
+        for child in var:
+            if child.tag == "sourceName":
+                vars_dict[child.text] = var
+    vars_dict_sorted = dict(sorted(vars_dict.items()))
+    for var in vars_dict_sorted.values():
         root.append(var)
 
     # fix indentation and write xml
