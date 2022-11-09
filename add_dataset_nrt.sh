@@ -6,5 +6,5 @@ sudo docker exec -i erddap-docker_erddap_1 bash -c "cd webapps/erddap/WEB-INF/ &
 cp /media/data/customdocker/customvolumes/erddapData/logs/GenerateDatasetsXml.out /home/ubuntu/xml_edit/original.xml
 /usr/bin/python3 /home/ubuntu/xml_edit/correct_xml.py  "$glider" "$mission" nrt
 
-flagdir=/media/data/customdocker/customvolumes/erddapData/flag/delayed_SEA0"$glider"_M"$mission"
+flagdir=/media/data/customdocker/customvolumes/erddapData/flag/nrt_SEA0"$glider"_M"$mission"
 touch "$flagdir"
