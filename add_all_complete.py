@@ -38,11 +38,7 @@ def proc_all_nrt():
             update_erddap_time(glider, mission, "complete")
             continue
         _log.info(f"SEA{glider} M{mission} is too large! {size/1e9} GB. Look for chunked")
-        coarse_dir = pathlib.Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries_chunked")
-        coarse_files = list(coarse_dir.glob("*.nc"))
-        if not coarse_files:
-            _log.warning(f"coarsened data in SEA{glider}/M{mission}/timeseries_chunked not found. Chunking")
-            chunk_ds(glider, mission)
+        chunk_ds(glider, mission)
         _log.info(f"Adding SEA{glider} M{mission} from coarse dir")
         subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_chunked.sh", str(glider), str(mission)])
         update_erddap_time(glider, mission, "complete")
