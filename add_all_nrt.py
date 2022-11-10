@@ -5,7 +5,7 @@ from times_track import update_proc_time, update_erddap_time, erddap_needs_updat
 _log = logging.getLogger(__name__)
 
 
-def proc_all_nrt():
+def proc_all_nrt(proc_all=False):
     glider_paths = list(pathlib.Path("/media/data/data_dir//nrt").glob("SEA*"))
     glidermissions = []
     for glider_path in glider_paths:
@@ -24,7 +24,7 @@ def proc_all_nrt():
         _log.info(f"Check SEA{glider} M{mission}")
         _log.info("Check processing time")
         update_proc_time(glider, mission, "nrt")
-        if erddap_needs_update(glider, mission, "nrt"):
+        if erddap_needs_update(glider, mission, "nrt") or proc_all:
             _log.info(f"Add SEA{glider} M{mission}")
             subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_nrt.sh", str(glider), str(mission)])
             update_erddap_time(glider, mission, "nrt")
