@@ -126,6 +126,9 @@ def edit_add_attrs(adds):
     for child in adds:
         if child.attrib["name"] == "cdm_trajectory_variables":
             adds.remove(child)
+        if child.attrib["name"] == "subsetVariables":
+            adds.remove(child)
+
     add_element(adds, "cdm_data_type", "TimeSeries")
     add_element(adds, "featureType", "TimeSeries")
     add_element(adds, "cdm_timeseries_variables", "profile_index")
