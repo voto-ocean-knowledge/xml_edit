@@ -25,7 +25,6 @@ def update_proc_time(glider, mission, file_type):
                                 "proc_time": mtime, "erddap_time": datetime.datetime(1970, 1, 1)}, index=[len(df)])
         df = pd.concat((df, new_row))
     df.sort_values("proc_time", inplace=True)
-    _log.info(f"updated processing time to {mtime}")
     df.to_csv(fn, index=False)
 
 
@@ -42,7 +41,6 @@ def update_erddap_time(glider, mission, file_type):
                                 "erddap_time": datetime.datetime.now()}, index=[len(df)])
         df = pd.concat((df, new_row))
     df.sort_values("proc_time", inplace=True)
-    _log.info(f"updated erddap time to {datetime.datetime.now()}")
     df.to_csv(fn, index=False)
 
 

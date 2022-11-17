@@ -21,8 +21,6 @@ def proc_all_nrt(proc_all=False):
         if glider == 70:
             print("no processing for bastiens glider")
             continue
-        _log.info(f"Check SEA{glider} M{mission}")
-        _log.info("Check processing time")
         update_proc_time(glider, mission, "nrt")
         if erddap_needs_update(glider, mission, "nrt") or proc_all:
             _log.info(f"Add SEA{glider} M{mission}")
