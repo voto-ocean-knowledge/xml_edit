@@ -3,7 +3,6 @@ import argparse
 import logging
 _log = logging.getLogger(__name__)
 
-document_loc = "/home/ubuntu/xml_edit/original.xml"
 
 
 def add_element(tree, name, text):
@@ -58,6 +57,7 @@ def update_doc(glider, mission, kind):
     :param kind: nrt or complete
     :return: 
     """
+    document_loc = f"/home/ubuntu/xml_edit/xml/{kind}_SEA${glider}_M${mission}.xml"
     tree = ET.parse(document_loc)
     root = tree.getroot()
     # Update dataset name
@@ -109,7 +109,8 @@ def update_doc(glider, mission, kind):
 
     # fix indentation and write xml
     ET.indent(tree, '  ')
-    tree.write("/home/ubuntu/xml_edit/new.xml", encoding="utf-8", xml_declaration=True)
+    out = f"/home/ubuntu/xml_edit/xml/corrected_{kind}_SEA${glider}_M${mission}.xml"
+    tree.write(out, encoding="utf-8", xml_declaration=True)
 
     # append dataset to datasets.xml
     tree_ds = ET.parse("/media/data/customdocker/customvolumes/erddapContent/datasets.xml")
