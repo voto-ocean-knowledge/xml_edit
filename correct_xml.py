@@ -57,7 +57,7 @@ def update_doc(glider, mission, kind):
     :param kind: nrt or complete
     :return: 
     """
-    document_loc = f"/home/ubuntu/xml_edit/xml/{kind}_SEA${glider}_M${mission}.xml"
+    document_loc = f"/home/ubuntu/xml_edit/xml/{kind}_SEA{glider}_M{mission}.xml"
     tree = ET.parse(document_loc)
     root = tree.getroot()
     # Update dataset name
@@ -109,7 +109,7 @@ def update_doc(glider, mission, kind):
 
     # fix indentation and write xml
     ET.indent(tree, '  ')
-    out = f"/home/ubuntu/xml_edit/xml/corrected_{kind}_SEA${glider}_M${mission}.xml"
+    out = f"/home/ubuntu/xml_edit/xml/corrected_{kind}_SEA{glider}_M{mission}.xml"
     tree.write(out, encoding="utf-8", xml_declaration=True)
 
     # append dataset to datasets.xml
