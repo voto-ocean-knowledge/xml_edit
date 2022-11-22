@@ -57,9 +57,6 @@ def update_doc(glider, mission, kind):
     :param kind: nrt or complete
     :return: 
     """
-    if glider == 70:
-        print("no processing for bastiens glider")
-        return
     document_loc = f"/home/ubuntu/xml_edit/xml/{kind}_SEA{glider}_M{mission}.xml"
     tree = ET.parse(document_loc)
     root = tree.getroot()

@@ -21,9 +21,6 @@ def proc_all_nrt():
     _log.info(f"found {len(glidermissions)} glider missions to add")
     gliders, missions, sizes = [], [], []
     for glider, mission in glidermissions:
-        if glider == 70:
-            print("no processing for bastiens glider")
-            continue
         mission_dir = f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries"
         _log.info(f"Check SEA{glider} M{mission}")
         update_proc_time(glider, mission, "complete")
