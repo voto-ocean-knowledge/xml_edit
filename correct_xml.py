@@ -108,6 +108,12 @@ def update_doc(glider, mission, kind):
                         add_element(new_add, "long_name", "Profile Index")
                         add_element(new_add, "cf_role", "timeseries_id")
                         child.append(new_add)
+                # Correct addAttributes
+                if grand_child.tag == "addAttributes":
+                    foo = bar
+                    _log.debug(f"Remove units from {child[0].text}")
+                    grand_child = edit_datavar_add_attrs(grand_child)
+
                 # Take the common selection variables and put them at the top
                 if grand_child.tag == "sourceName":
                     if grand_child.text in special_vars:
@@ -156,6 +162,15 @@ def edit_add_attrs(adds):
     add_element(adds, "featureType", "TimeSeries")
     add_element(adds, "cdm_timeseries_variables", "profile_index")
     add_element(adds, "subsetVariables", "profile_index")
+
+
+def edit_datavar_add_attrs(adds):
+    # Remove the units tags that ERDDAP adds.
+    for child in adds:
+        if child.attrib["name"] == "units":
+            _log.debug("remove", child.attrib["name"], child.text)
+            adds.remove(child)
+    return adds
 
 
 if __name__ == '__main__':
