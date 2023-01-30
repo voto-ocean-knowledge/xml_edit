@@ -110,7 +110,6 @@ def update_doc(glider, mission, kind):
                         child.append(new_add)
                 # Correct addAttributes
                 if grand_child.tag == "addAttributes":
-                    foo = bar
                     _log.debug(f"Remove units from {child[0].text}")
                     grand_child = edit_datavar_add_attrs(grand_child)
 
