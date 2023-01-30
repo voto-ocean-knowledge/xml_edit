@@ -21,13 +21,15 @@ def proc_all_nrt():
     _log.info(f"found {len(glidermissions)} glider missions to add")
     gliders, missions, sizes = [], [], []
     total = len(glidermissions)
-    for i , (glider, mission) in enumerate(glidermissions):
+    for i, (glider, mission) in enumerate(glidermissions):
         mission_dir = f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries"
         _log.info(f"{i}/{total}: Check SEA{glider} M{mission}")
         update_proc_time(glider, mission, "complete")
         if not erddap_needs_update(glider, mission, "complete"):
             continue
-        nc = list(pathlib.Path(mission_dir).glob("*.nc"))[0]
+        ncs = list(pathlib.Path(mission_dir).glob("*.nc"))
+        ncs.sort()
+        nc = ncs[0]
         size = nc.lstat().st_size
         gliders.append(glider)
         missions.append(mission)
@@ -39,8 +41,8 @@ def proc_all_nrt():
             continue
         _log.info(f"SEA{glider} M{mission} is too large! {size/1e9} GB. Look for chunked")
         chunk_ds(glider, mission)
-        _log.info(f"Adding SEA{glider} M{mission} from coarse dir")
-        subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_chunked.sh", str(glider), str(mission)])
+        _log.info(f"Adding SEA{glider} M{mission} chunked")
+        subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
         update_erddap_time(glider, mission, "complete")
     df_sizes = pd.DataFrame({"glider": gliders, "mission": missions, "size_gb": sizes})
     df_sizes.to_csv("/media/data/log/sizes.csv", index=False)
