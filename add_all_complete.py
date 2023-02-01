@@ -34,6 +34,10 @@ def proc_all_nrt():
         gliders.append(glider)
         missions.append(mission)
         sizes.append(size/1e9)
+        if pathlib.Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/ADCP").exists():
+            _log.info(f"Adding SEA{glider} M{mission} ADCP data")
+            subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_adcp.sh", str(glider), str(mission)])
+
         if size < 4e9:
             _log.info(f"Adding SEA{glider} M{mission}. Size {size/1e9} GB")
             subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
