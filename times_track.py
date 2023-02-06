@@ -11,7 +11,9 @@ def update_proc_time(glider, mission, file_type):
         path_base = pathlib.Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries")
     else:
         path_base = pathlib.Path(f"/media/data/data_dir/nrt/SEA{glider}/M{mission}/timeseries")
-    path = list(path_base.glob("*.nc"))[0]
+    ncs = list(path_base.glob("*.nc"))
+    ncs.sort()
+    path = ncs[0]
     mtime = datetime.datetime.fromtimestamp(path.lstat().st_mtime)
     fn = f"/media/data/log/{file_type}.csv"
     df = pd.read_csv(fn, parse_dates=["proc_time", "erddap_time"])
