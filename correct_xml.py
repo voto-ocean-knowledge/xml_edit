@@ -136,7 +136,7 @@ def update_doc(glider, mission, kind):
 
     # fix indentation and write xml
     ET.indent(tree, '  ')
-    out = f"/home/ubuntu/xml_edit/xml/corrected_{kind}_SEA{glider}_M{mission}.xml"
+    out = f"/media/data/customdocker/customvolumes/erddapContent/parts/{ds_name}.xml"
     tree.write(out, encoding="utf-8", xml_declaration=True)
 
     # append dataset to datasets.xml
