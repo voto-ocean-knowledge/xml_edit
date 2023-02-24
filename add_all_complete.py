@@ -42,6 +42,10 @@ def proc_all_nrt():
             _log.info(f"Adding SEA{glider} M{mission}. Size {size/1e9} GB")
             subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
             update_erddap_time(glider, mission, "complete")
+            if len(ncs) > 1:
+                _log.info("Removing unused chunked dataset files")
+                for ds_path in ncs[1:]:
+                    ds_path.unlink()
             continue
         _log.info(f"SEA{glider} M{mission} is too large! {size/1e9} GB. Look for chunked")
         chunk_ds(glider, mission)
