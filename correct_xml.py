@@ -58,6 +58,10 @@ def update_adcp(glider, mission):
     check_for_dataset(ds_name)
     root.attrib["datasetID"] = ds_name
     # append dataset to datasets.xml
+    # fix indentation and write xml
+    ET.indent(tree, '  ')
+    out = f"/media/data/customdocker/customvolumes/erddapContent/parts/{ds_name}.xml"
+    tree.write(out, encoding="utf-8", xml_declaration=True)
     tree_ds = ET.parse("/media/data/customdocker/customvolumes/erddapContent/datasets.xml")
     root_ds = tree_ds.getroot()
     root_ds.append(root)
