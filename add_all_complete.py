@@ -8,7 +8,7 @@ _log = logging.getLogger(__name__)
 
 
 def proc_all_nrt():
-    glider_paths = list(pathlib.Path("/media/data/data_dir/complete_mission").glob("SEA*"))
+    glider_paths = list(pathlib.Path("/media/data/complete_mission").glob("SEA*"))
     glidermissions = []
     for glider_path in glider_paths:
         mission_paths = glider_path.glob("M*")
@@ -22,7 +22,7 @@ def proc_all_nrt():
     gliders, missions, sizes = [], [], []
     total = len(glidermissions)
     for i, (glider, mission) in enumerate(glidermissions):
-        mission_dir = f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries"
+        mission_dir = f"/media/data/complete_mission/SEA{glider}/M{mission}/timeseries"
         _log.info(f"{i}/{total}: Check SEA{glider} M{mission}")
         update_proc_time(glider, mission, "complete")
         if not erddap_needs_update(glider, mission, "complete"):
@@ -34,7 +34,7 @@ def proc_all_nrt():
         gliders.append(glider)
         missions.append(mission)
         sizes.append(size/1e9)
-        if pathlib.Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/ADCP").exists():
+        if pathlib.Path(f"/media/data/complete_mission/SEA{glider}/M{mission}/ADCP").exists():
             _log.info(f"Adding SEA{glider} M{mission} ADCP data")
             subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_adcp.sh", str(glider), str(mission)])
 

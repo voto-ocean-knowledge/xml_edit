@@ -8,12 +8,12 @@ _log = logging.getLogger(__name__)
 
 def chunk_ds(glider, mission):
     _log.info(f"start chunking SEA{glider} M{mission}")
-    input_file = Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries/mission_timeseries.nc")
+    input_file = Path(f"/media/data/complete_mission/SEA{glider}/M{mission}/timeseries/mission_timeseries.nc")
     if not input_file.exists():
         _log.error(f"input timeseries does not exist for SEA{glider} M{mission}. Aborting")
         raise ValueError(f"No input timeseries for SEA{glider} M{mission}")
     ds = xr.open_dataset(input_file)
-    output_dir = Path(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}")
+    output_dir = Path(f"/media/data/complete_mission/SEA{glider}/M{mission}")
     if not Path(output_dir).exists():
         Path(output_dir).mkdir(parents=True)
     length = len(ds.time)
@@ -27,7 +27,7 @@ def chunk_ds(glider, mission):
         _log.debug(f"start {start} end {end}")
         ds_sub = ds.isel(time=np.arange(start, end))
         _log.debug(f"{len(ds_sub.time)} {ds_sub.time.values[0]} {ds_sub.time.values[-1]}")
-        ds_sub.to_netcdf(f"/media/data/data_dir/complete_mission/SEA{glider}/M{mission}/timeseries/mission_timeseries_{i}.nc")
+        ds_sub.to_netcdf(f"/media/data/complete_mission/SEA{glider}/M{mission}/timeseries/mission_timeseries_{i}.nc")
     if input_file.exists():
         _log.info(f"Remove original timeseries file SEA{glider} M{mission}")
         input_file.unlink()

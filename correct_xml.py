@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import argparse
 import logging
 _log = logging.getLogger(__name__)
-
+xml_file = "/home/ubuntu/erddapContent/datasets.xml"
 
 
 def add_element(tree, name, text):
@@ -35,7 +35,7 @@ def sort_by_datasetid(root):
 
 
 def check_for_dataset(dataset_id):
-    tree = ET.parse("/media/data/customdocker/customvolumes/erddapContent/datasets.xml")
+    tree = ET.parse(xml_file)
     root = tree.getroot()
     for child in root:
         if child.attrib:
@@ -45,7 +45,7 @@ def check_for_dataset(dataset_id):
                     root.remove(child)
                     _log.warning(f"dataset {dataset_id} already present. Removing it from datasets.xml")
     ET.indent(tree, '  ')
-    tree.write("/media/data/customdocker/customvolumes/erddapContent/datasets.xml", encoding="utf-8",
+    tree.write(xml_file, encoding="utf-8",
                xml_declaration=True)
 
 
@@ -60,15 +60,15 @@ def update_adcp(glider, mission):
     # append dataset to datasets.xml
     # fix indentation and write xml
     ET.indent(tree, '  ')
-    out = f"/media/data/customdocker/customvolumes/erddapContent/parts/{ds_name}.xml"
+    out = f"/home/ubuntu/erddapContent/parts/{ds_name}.xml"
     tree.write(out, encoding="utf-8", xml_declaration=True)
-    tree_ds = ET.parse("/media/data/customdocker/customvolumes/erddapContent/datasets.xml")
+    tree_ds = ET.parse(xml_file)
     root_ds = tree_ds.getroot()
     root_ds.append(root)
     # sort datasets to keep file organisation consistent
     sort_by_datasetid(root_ds)
     ET.indent(tree_ds, '  ')
-    tree_ds.write("/media/data/customdocker/customvolumes/erddapContent/datasets.xml", encoding="utf-8",
+    tree_ds.write(xml_file, encoding="utf-8",
                   xml_declaration=True)
 
 
@@ -140,17 +140,17 @@ def update_doc(glider, mission, kind):
 
     # fix indentation and write xml
     ET.indent(tree, '  ')
-    out = f"/media/data/customdocker/customvolumes/erddapContent/parts/{ds_name}.xml"
+    out = f"/home/ubuntu/erddapContent/parts/{ds_name}.xml"
     tree.write(out, encoding="utf-8", xml_declaration=True)
 
     # append dataset to datasets.xml
-    tree_ds = ET.parse("/media/data/customdocker/customvolumes/erddapContent/datasets.xml")
+    tree_ds = ET.parse(xml_file)
     root_ds = tree_ds.getroot()
     root_ds.append(root)
     # sort datasets to keep file organisation consistent
     sort_by_datasetid(root_ds)
     ET.indent(tree_ds, '  ')
-    tree_ds.write("/media/data/customdocker/customvolumes/erddapContent/datasets.xml", encoding="utf-8",
+    tree_ds.write(xml_file, encoding="utf-8",
                   xml_declaration=True)
 
 

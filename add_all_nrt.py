@@ -6,7 +6,7 @@ _log = logging.getLogger(__name__)
 
 
 def proc_all_nrt(proc_all=False):
-    glider_paths = list(pathlib.Path("/media/data/data_dir//nrt").glob("SEA*"))
+    glider_paths = list(pathlib.Path("/media/data/nrt").glob("SEA*"))
     glidermissions = []
     for glider_path in glider_paths:
         mission_paths = glider_path.glob("M*")
