@@ -1,2 +1,1 @@
-sudo chown -R erddapdata:erddapdata /media/data/complete_mission
-sudo chown -R usrtomcat:usrtomcat  /media/data/erddapData
+sudo chown -R usrerddap:usrerddap /media/data/complete_mission
