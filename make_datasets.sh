@@ -4,4 +4,4 @@ for f in parts/nrt_*SEA*.xml; do tail -q -n +2 "$f" >> new_datasets.xml && echo 
 for f in parts/delayed_*SEA*.xml; do tail -q -n +2 "$f" >> new_datasets.xml && echo "" >> new_datasets.xml; done
 for f in parts/adcp_*SEA*.xml; do tail -q -n +2 "$f" >> new_datasets.xml && echo "" >> new_datasets.xml; done
 echo "</erddapDatasets>"  >> new_datasets.xml
-
+mv new_dataset.mxl datasets.xml
