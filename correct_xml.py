@@ -1,8 +1,8 @@
 import xml.etree.ElementTree as ET
 import argparse
 import logging
+import subprocess
 _log = logging.getLogger(__name__)
-xml_file = "/home/ubuntu/erddapContent/datasets.xml"
 
 
 def add_element(tree, name, text):
@@ -34,43 +34,20 @@ def sort_by_datasetid(root):
     return root
 
 
-def check_for_dataset(dataset_id):
-    tree = ET.parse(xml_file)
-    root = tree.getroot()
-    for child in root:
-        if child.attrib:
-            if "datasetID" in child.attrib:
-                if child.attrib["datasetID"] == dataset_id:
-                    # remove entry from datasets.xml
-                    root.remove(child)
-                    _log.warning(f"dataset {dataset_id} already present. Removing it from datasets.xml")
-    ET.indent(tree, '  ')
-    tree.write(xml_file, encoding="utf-8",
-               xml_declaration=True)
-
-
 def update_adcp(glider, mission):
     document_loc = f"/home/ubuntu/xml_edit/xml/adcp_SEA{glider}_M{mission}.xml"
     tree = ET.parse(document_loc)
     root = tree.getroot()
     # Update dataset name
     ds_name = f"adcp_SEA{str(glider).zfill(3)}_M{mission}"
-    check_for_dataset(ds_name)
     root.attrib["datasetID"] = ds_name
     # append dataset to datasets.xml
     # fix indentation and write xml
     ET.indent(tree, '  ')
     out = f"/home/ubuntu/erddapContent/parts/{ds_name}.xml"
     tree.write(out, encoding="utf-8", xml_declaration=True)
-    tree_ds = ET.parse(xml_file)
-    root_ds = tree_ds.getroot()
-    root_ds.append(root)
-    # sort datasets to keep file organisation consistent
-    sort_by_datasetid(root_ds)
-    ET.indent(tree_ds, '  ')
-    tree_ds.write(xml_file, encoding="utf-8",
-                  xml_declaration=True)
-
+    _log.info(f"Recombining datasets.xml")
+    subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/make_datasets.sh"])
 
 def update_doc(glider, mission, kind):
     """
@@ -88,7 +65,6 @@ def update_doc(glider, mission, kind):
     root = tree.getroot()
     # Update dataset name
     ds_name = f"{kind}_SEA{str(glider).zfill(3)}_M{mission}"
-    check_for_dataset(ds_name)
     root.attrib["datasetID"] = ds_name
     first_vars = []
     data_vars = []
@@ -142,16 +118,8 @@ def update_doc(glider, mission, kind):
     ET.indent(tree, '  ')
     out = f"/home/ubuntu/erddapContent/parts/{ds_name}.xml"
     tree.write(out, encoding="utf-8", xml_declaration=True)
-
-    # append dataset to datasets.xml
-    tree_ds = ET.parse(xml_file)
-    root_ds = tree_ds.getroot()
-    root_ds.append(root)
-    # sort datasets to keep file organisation consistent
-    sort_by_datasetid(root_ds)
-    ET.indent(tree_ds, '  ')
-    tree_ds.write(xml_file, encoding="utf-8",
-                  xml_declaration=True)
+    _log.info(f"Recombining datasets.xml")
+    subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/make_datasets.sh"])
 
 
 def edit_add_attrs(adds):
