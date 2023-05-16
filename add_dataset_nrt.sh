@@ -6,5 +6,5 @@ sudo docker exec -i docker-erddap bash -c "cd webapps/erddap/WEB-INF/ && bash Ge
 cp /media/data/erddapData/logs/GenerateDatasetsXml.out "$xmlname"
 /usr/bin/python3 /home/ubuntu/xml_edit/correct_xml.py  "$glider" "$mission" nrt
 
-flagdir=/media/data/erddapData/flag/nrt_SEA0"$glider"_M"$mission"
+flagdir=/media/data/erddapData/hardFlag/nrt_SEA0"$glider"_M"$mission"
 touch "$flagdir"

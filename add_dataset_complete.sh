@@ -6,5 +6,5 @@ sudo docker exec -i docker-erddap bash -c "cd webapps/erddap/WEB-INF/ && java -c
 cp /media/data/erddapData/logs/GenerateDatasetsXml.out "$xmlname"
 /usr/bin/python3 /home/ubuntu/xml_edit/correct_xml.py  "$glider" "$mission" delayed
 
-flagdir=/media/data/erddapData/flag/delayed_SEA0"$glider"_M"$mission"
+flagdir=/media/data/erddapData/hardFlag/delayed_SEA0"$glider"_M"$mission"
 touch "$flagdir"
