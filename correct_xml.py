@@ -70,6 +70,14 @@ def update_doc(glider, mission, kind):
     data_vars = []
     special_vars = ["longitude", "latitude", "time", "depth"]
     for child in root:
+        # Check that data dir matches dataset name
+        if child.tag == "fileDir":
+            data_dir = child.text
+            dir_parts = data_dir.split("/")
+            glider_num = int(dir_parts[-4][3:])
+            mission_num = int(dir_parts[-3][1:])
+            assert glider_num == glider
+            assert mission_num == mission
         # fix for addAttributes
         if child.tag == "addAttributes":
             add_attrs = child
