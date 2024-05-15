@@ -1,5 +1,5 @@
-for f in /media/data/meta/*;
+for f in /data/meta/*;
 do
         name=$(basename "${f%.*}")
-        /usr/bin/bash /home/ubuntu/xml_edit/add_meta.sh "$name"
+        /usr/bin/bash /home/usrerddap/erddap/xml_edit/add_meta.sh "$name"
 done

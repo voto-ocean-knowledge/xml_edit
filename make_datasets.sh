@@ -1,4 +1,4 @@
-cd /home/ubuntu/erddapContent
+cd /home/usrerddap/erddap/erddapContent
 cat header.xml > new_datasets.xml
 for f in parts/nrt_*SEA*.xml; do tail -q -n +2 "$f" >> new_datasets.xml && echo "" >> new_datasets.xml; done
 for f in parts/delayed_*SEA*.xml; do tail -q -n +2 "$f" >> new_datasets.xml && echo "" >> new_datasets.xml; done

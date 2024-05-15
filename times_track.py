@@ -8,14 +8,14 @@ _log = logging.getLogger(__name__)
 
 def update_proc_time(glider, mission, file_type):
     if file_type == "complete":
-        path_base = pathlib.Path(f"/media/data/complete_mission/SEA{glider}/M{mission}/timeseries")
+        path_base = pathlib.Path(f"/data/complete_mission/SEA{glider}/M{mission}/timeseries")
     else:
-        path_base = pathlib.Path(f"/media/data/nrt/SEA{glider}/M{mission}/timeseries")
+        path_base = pathlib.Path(f"/data/nrt/SEA{glider}/M{mission}/timeseries")
     ncs = list(path_base.glob("*.nc"))
     ncs.sort()
     path = ncs[0]
     mtime = datetime.datetime.fromtimestamp(path.lstat().st_mtime)
-    fn = f"/media/data/log/{file_type}.csv"
+    fn = f"/data/log/{file_type}.csv"
     df = pd.read_csv(fn, parse_dates=["proc_time", "erddap_time"])
     glider_mission_check = np.logical_and(df.glider == glider, df.mission == mission)
     a = [glider_mission_check]
@@ -31,7 +31,7 @@ def update_proc_time(glider, mission, file_type):
 
 
 def update_erddap_time(glider, mission, file_type):
-    fn = f"/media/data/log/{file_type}.csv"
+    fn = f"/data/log/{file_type}.csv"
     df = pd.read_csv(fn, parse_dates=["proc_time", "erddap_time"])
     glider_mission_check = np.logical_and(df.glider == glider, df.mission == mission)
     a = [glider_mission_check]
@@ -47,7 +47,7 @@ def update_erddap_time(glider, mission, file_type):
 
 
 def erddap_needs_update(glider, mission, file_type):
-    fn = f"/media/data/log/{file_type}.csv"
+    fn = f"/data/log/{file_type}.csv"
     df = pd.read_csv(fn, parse_dates=["proc_time", "erddap_time"])
     glider_mission_check = np.logical_and(df.glider == glider, df.mission == mission)
     a = [glider_mission_check]

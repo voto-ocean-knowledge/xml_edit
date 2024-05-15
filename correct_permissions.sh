@@ -1,1 +1,1 @@
-sudo chown -R usrerddap:usrerddap /media/data/complete_mission
+chown -R usrerddap:usrerddap /data/complete_mission

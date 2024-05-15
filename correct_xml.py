@@ -35,7 +35,7 @@ def sort_by_datasetid(root):
 
 
 def update_adcp(glider, mission):
-    document_loc = f"/home/ubuntu/xml_edit/xml/adcp_SEA{glider}_M{mission}.xml"
+    document_loc = f"/home/usrerddap/erddap/xml_edit/xml/adcp_SEA{glider}_M{mission}.xml"
     tree = ET.parse(document_loc)
     root = tree.getroot()
     # Update dataset name
@@ -44,10 +44,10 @@ def update_adcp(glider, mission):
     # append dataset to datasets.xml
     # fix indentation and write xml
     ET.indent(tree, '  ')
-    out = f"/home/ubuntu/erddapContent/parts/{ds_name}.xml"
+    out = f"/home/usrerddap/erddap/erddapContent/parts/{ds_name}.xml"
     tree.write(out, encoding="utf-8", xml_declaration=True)
     _log.info(f"Recombining datasets.xml")
-    subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/make_datasets.sh"])
+    subprocess.check_call(['/usr/bin/bash', "/home/usrerddap/erddap/xml_edit/make_datasets.sh"])
 
 def update_doc(glider, mission, kind):
     """
@@ -60,7 +60,7 @@ def update_doc(glider, mission, kind):
     if kind == "adcp":
         update_adcp(glider, mission)
         return
-    document_loc = f"/home/ubuntu/xml_edit/xml/{kind}_SEA{glider}_M{mission}.xml"
+    document_loc = f"/home/usrerddap/erddap/xml_edit/xml/{kind}_SEA{glider}_M{mission}.xml"
     tree = ET.parse(document_loc)
     root = tree.getroot()
     # Update dataset name
@@ -124,10 +124,10 @@ def update_doc(glider, mission, kind):
 
     # fix indentation and write xml
     ET.indent(tree, '  ')
-    out = f"/home/ubuntu/erddapContent/parts/{ds_name}.xml"
+    out = f"/home/usrerddap/erddap/erddapContent/parts/{ds_name}.xml"
     tree.write(out, encoding="utf-8", xml_declaration=True)
     _log.info(f"Recombining datasets.xml")
-    subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/make_datasets.sh"])
+    subprocess.check_call(['/usr/bin/bash', "/home/usrerddap/erddap/xml_edit/make_datasets.sh"])
 
 
 def edit_add_attrs(adds):
@@ -160,7 +160,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.kind not in ['nrt', 'delayed', 'adcp']:
         raise ValueError('kind must be nrt or delayed')
-    logf = f'/media/data/log/{args.kind}.log'
+    logf = f'/data/log/{args.kind}.log'
     logging.basicConfig(filename=logf,
                         filemode='a',
                         format='%(asctime)s %(levelname)-8s %(message)s',

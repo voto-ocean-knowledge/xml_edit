@@ -8,7 +8,7 @@ _log = logging.getLogger(__name__)
 
 
 def proc_all_nrt():
-    glider_paths = list(pathlib.Path("/media/data/complete_mission").glob("SEA*"))
+    glider_paths = list(pathlib.Path("/data/complete_mission").glob("SEA*"))
     glidermissions = []
     for glider_path in glider_paths:
         mission_paths = glider_path.glob("M*")
@@ -22,7 +22,7 @@ def proc_all_nrt():
     gliders, missions, sizes = [], [], []
     total = len(glidermissions)
     for i, (glider, mission) in enumerate(glidermissions):
-        mission_dir = f"/media/data/complete_mission/SEA{glider}/M{mission}/timeseries"
+        mission_dir = f"/data/complete_mission/SEA{glider}/M{mission}/timeseries"
         _log.info(f"{i}/{total}: Check SEA{glider} M{mission}")
         update_proc_time(glider, mission, "complete")
         if not erddap_needs_update(glider, mission, "complete"):
@@ -34,13 +34,13 @@ def proc_all_nrt():
         gliders.append(glider)
         missions.append(mission)
         sizes.append(size/1e9)
-        if pathlib.Path(f"/media/data/complete_mission/SEA{glider}/M{mission}/ADCP").exists():
+        if pathlib.Path(f"/data/complete_mission/SEA{glider}/M{mission}/ADCP").exists():
             _log.info(f"Adding SEA{glider} M{mission} ADCP data")
-            subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_adcp.sh", str(glider), str(mission)])
+            subprocess.check_call(['/usr/bin/bash', "/home/usrerddap/erddap/xml_edit/add_dataset_adcp.sh", str(glider), str(mission)])
 
         if size < 4e9:
             _log.info(f"Adding SEA{glider} M{mission}. Size {size/1e9} GB")
-            subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
+            subprocess.check_call(['/usr/bin/bash', "/home/usrerddap/erddap/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
             update_erddap_time(glider, mission, "complete")
             if len(ncs) > 1 and nc.parts[-1] == "mission_timeseries.nc":
                 _log.warning("Removing unused chunked dataset files")
@@ -51,14 +51,14 @@ def proc_all_nrt():
         _log.info(f"SEA{glider} M{mission} is too large! {size/1e9} GB. Look for chunked")
         chunk_ds(glider, mission)
         _log.info(f"Adding SEA{glider} M{mission} chunked")
-        subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
+        subprocess.check_call(['/usr/bin/bash', "/home/usrerddap/erddap/xml_edit/add_dataset_complete.sh", str(glider), str(mission)])
         update_erddap_time(glider, mission, "complete")
     df_sizes = pd.DataFrame({"glider": gliders, "mission": missions, "size_gb": sizes})
-    df_sizes.to_csv("/media/data/log/sizes.csv", index=False)
+    df_sizes.to_csv("/data/log/sizes.csv", index=False)
 
 
 if __name__ == '__main__':
-    logf = f'/media/data/log/all_complete.log'
+    logf = f'/data/log/all_complete.log'
     logging.basicConfig(filename=logf,
                         filemode='a',
                         format='%(asctime)s %(levelname)-8s %(message)s',
@@ -66,6 +66,6 @@ if __name__ == '__main__':
                         datefmt='%Y-%m-%d %H:%M:%S')
     _log.info("Start add all complete datasets to xml")
     proc_all_nrt()
-    subprocess.check_call(['/usr/bin/bash', "/home/ubuntu/xml_edit/correct_permissions.sh"])
+    subprocess.check_call(['/usr/bin/bash', "/home/usrerddap/erddap/xml_edit/correct_permissions.sh"])
     _log.info("Completed add all complete datasets to xml")
 
