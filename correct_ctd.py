@@ -81,7 +81,7 @@ def update_doc(dataset_id):
 
     # fix indentation and write xml
     ET.indent(tree, '  ')
-    out = f"/home/usrerddap/erddap/erddapContent/parts/{dataset_id}.xml"
+    out = f"/home/usrerddap/erddap/content/parts/{dataset_id}.xml"
     tree.write(out, encoding="utf-8", xml_declaration=True)
     _log.info(f"Recombining datasets.xml")
     subprocess.check_call(['/usr/bin/bash', "/home/usrerddap/erddap/xml_edit/make_datasets.sh"])
