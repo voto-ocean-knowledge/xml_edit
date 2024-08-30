@@ -3,7 +3,7 @@ import argparse
 import logging
 import subprocess
 
-from correct_xml import add_element, edit_datavar_add_attrs
+from correct_xml import add_element, edit_datavar_add_attrs, correct_charset
 
 _log = logging.getLogger(__name__)
 
@@ -30,6 +30,7 @@ def update_doc(dataset_id):
     tree = ET.parse(document_loc)
     root = tree.getroot()
     root.attrib["datasetID"] = dataset_id
+    correct_charset(root)
 
     first_vars = []
     data_vars = []
