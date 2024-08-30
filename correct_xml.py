@@ -19,6 +19,21 @@ def add_element(tree, name, text):
     tree.append(new)
 
 
+def correct_charset(root):
+    corrected_charset = False
+    for child in root:
+        if corrected_charset:
+            continue
+        if child.tag == 'charset':
+            child.text = 'UTF-8'
+            corrected_charset = True
+        if child.tag == 'addAttributes':
+            new = ET.Element("charset")
+            new.text = 'UTF-8'
+            root.insert(4, new)
+            corrected_charset = True
+
+
 def sort_children_by(parent):
     parent[:] = sorted(parent, key=lambda child: child.get("datasetID"), reverse=True)
 
@@ -38,6 +53,7 @@ def update_adcp(glider, mission):
     document_loc = f"/home/usrerddap/erddap/xml_edit/xml/adcp_SEA{glider}_M{mission}.xml"
     tree = ET.parse(document_loc)
     root = tree.getroot()
+    correct_charset(root)
     # Update dataset name
     ds_name = f"adcp_SEA{str(glider).zfill(3)}_M{mission}"
     root.attrib["datasetID"] = ds_name
@@ -48,6 +64,7 @@ def update_adcp(glider, mission):
     tree.write(out, encoding="utf-8", xml_declaration=True)
     _log.info(f"Recombining datasets.xml")
     subprocess.check_call(['/usr/bin/bash', "/home/usrerddap/erddap/xml_edit/make_datasets.sh"])
+
 
 def update_doc(glider, mission, kind):
     """
@@ -63,6 +80,7 @@ def update_doc(glider, mission, kind):
     document_loc = f"/home/usrerddap/erddap/xml_edit/xml/{kind}_SEA{glider}_M{mission}.xml"
     tree = ET.parse(document_loc)
     root = tree.getroot()
+    correct_charset(root)
     # Update dataset name
     ds_name = f"{kind}_SEA{str(glider).zfill(3)}_M{mission}"
     root.attrib["datasetID"] = ds_name
