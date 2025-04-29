@@ -73,7 +73,7 @@ def update_doc(glider, mission, kind):
         if child.tag == "fileDir":
             data_dir = child.text
             dir_parts = data_dir.split("/")
-            glider_num = int(dir_parts[-4][3:])
+            glider_num = dir_parts[-4]
             mission_num = int(dir_parts[-3][1:])
             assert glider_num == glider
             assert mission_num == mission
@@ -153,7 +153,7 @@ def edit_datavar_add_attrs(adds):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Add dataset to ERDDAP')
-    parser.add_argument('glider', type=int, help='glider , e.g. SEA070')
+    parser.add_argument('glider', type=str, help='glider , e.g. SEA070')
     parser.add_argument('mission', type=int, help='Mission number, e.g. 23')
     parser.add_argument('kind', type=str, help='Kind of dataset, must be nrt or delayed')
     args = parser.parse_args()
