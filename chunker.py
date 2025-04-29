@@ -7,13 +7,13 @@ _log = logging.getLogger(__name__)
 
 
 def chunk_ds(glider, mission):
-    _log.info(f"start chunking SEA{glider} M{mission}")
-    input_file = Path(f"/data/complete_mission/SEA{glider}/M{mission}/timeseries/mission_timeseries.nc")
+    _log.info(f"start chunking {glider} M{mission}")
+    input_file = Path(f"/data/complete_mission/{glider}/M{mission}/timeseries/mission_timeseries.nc")
     if not input_file.exists():
-        _log.error(f"input timeseries does not exist for SEA{glider} M{mission}. Aborting")
-        raise ValueError(f"No input timeseries for SEA{glider} M{mission}")
-    ds = xr.open_dataset(input_file)
-    output_dir = Path(f"/data/complete_mission/SEA{glider}/M{mission}")
+        _log.error(f"input timeseries does not exist for {glider} M{mission}. Aborting")
+        raise ValueError(f"No input timeseries for {glider} M{mission}")
+    ds = xr.open_dataset(input_file, decode_times=False)
+    output_dir = Path(f"/data/complete_mission/{glider}/M{mission}")
     if not Path(output_dir).exists():
         Path(output_dir).mkdir(parents=True)
     length = len(ds.time)
@@ -27,11 +27,11 @@ def chunk_ds(glider, mission):
         _log.debug(f"start {start} end {end}")
         ds_sub = ds.isel(time=np.arange(start, end))
         _log.debug(f"{len(ds_sub.time)} {ds_sub.time.values[0]} {ds_sub.time.values[-1]}")
-        ds_sub.to_netcdf(f"/data/complete_mission/SEA{glider}/M{mission}/timeseries/mission_timeseries_{i}.nc")
+        ds_sub.to_netcdf(f"/data/complete_mission/{glider}/M{mission}/timeseries/mission_timeseries_{i}.nc")
     if input_file.exists():
-        _log.info(f"Remove original timeseries file SEA{glider} M{mission}")
+        _log.info(f"Remove original timeseries file {glider} M{mission}")
         input_file.unlink()
-    _log.info(f"Completed chunking SEA{glider} M{mission}")
+    _log.info(f"Completed chunking {glider} M{mission}")
 
 
 if __name__ == '__main__':
@@ -43,7 +43,7 @@ if __name__ == '__main__':
                         datefmt='%Y-%m-%d %H:%M:%S')
     _log.info("Start chunking")
     parser = argparse.ArgumentParser(description='process SX files with pyglider')
-    parser.add_argument('glider', type=int, help='glider number, e.g. 70')
+    parser.add_argument('glider', type=int, help='glider serial, e.g. SEA070')
     parser.add_argument('mission', type=int, help='Mission number, e.g. 23')
     args = parser.parse_args()
     chunk_ds(args.glider, args.mission)

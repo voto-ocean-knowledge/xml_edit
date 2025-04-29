@@ -8,9 +8,9 @@ _log = logging.getLogger(__name__)
 
 def update_proc_time(glider, mission, file_type):
     if file_type == "complete":
-        path_base = pathlib.Path(f"/data/complete_mission/SEA{glider}/M{mission}/timeseries")
+        path_base = pathlib.Path(f"/data/complete_mission/{glider}/M{mission}/timeseries")
     else:
-        path_base = pathlib.Path(f"/data/nrt/SEA{glider}/M{mission}/timeseries")
+        path_base = pathlib.Path(f"/data/nrt/{glider}/M{mission}/timeseries")
     ncs = list(path_base.glob("*.nc"))
     ncs.sort()
     path = ncs[0]

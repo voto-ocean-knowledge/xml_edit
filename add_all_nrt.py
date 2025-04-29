@@ -6,13 +6,13 @@ _log = logging.getLogger(__name__)
 
 
 def proc_all_nrt(proc_all=False):
-    glider_paths = list(pathlib.Path("/data/nrt").glob("SEA*"))
+    glider_paths = list(pathlib.Path("/data/nrt").glob("*"))
     glidermissions = []
     for glider_path in glider_paths:
         mission_paths = glider_path.glob("M*")
         for mission_path in mission_paths:
             try:
-                glidermissions.append((int(glider_path.parts[-1][3:]), int(mission_path.parts[-1][1:])))
+                glidermissions.append((glider_path.parts[-1], int(mission_path.parts[-1][1:])))
             except:
                 _log.warning(f"Could not process {mission_path}")
 
@@ -20,11 +20,11 @@ def proc_all_nrt(proc_all=False):
     for glider, mission in glidermissions:
         update_proc_time(glider, mission, "nrt")
         if erddap_needs_update(glider, mission, "nrt") or proc_all:
-            _log.info(f"Add SEA{glider} M{mission}")
+            _log.info(f"Add {glider} M{mission}")
             subprocess.check_call(['/usr/bin/bash', "/home/usrerddap/erddap/xml_edit/add_dataset_nrt.sh", str(glider), str(mission)])
             update_erddap_time(glider, mission, "nrt")
         else:
-            _log.info(f"No update needed to SEA{glider} M{mission}")
+            _log.info(f"No update needed to {glider} M{mission}")
 
 
 if __name__ == '__main__':
