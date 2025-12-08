@@ -13,6 +13,9 @@ def update_proc_time(glider, mission, file_type):
         path_base = pathlib.Path(f"/data/nrt/{glider}/M{mission}/timeseries")
     ncs = list(path_base.glob("*.nc"))
     ncs.sort()
+    if len(ncs) == 0:
+        _log.error(f"Did not find expected file in {path_base}. Cannot update proc time")
+        return
     path = ncs[0]
     mtime = datetime.datetime.fromtimestamp(path.lstat().st_mtime)
     fn = f"/data/log/{file_type}.csv"

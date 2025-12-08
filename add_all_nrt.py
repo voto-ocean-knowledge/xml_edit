@@ -28,7 +28,7 @@ def proc_all_nrt(proc_all=False):
 
 
 if __name__ == '__main__':
-    logf = f'/data/log/all_nrt.log'
+    logf = f'/data/log/nrt.log'
     logging.basicConfig(filename=logf,
                         filemode='a',
                         format='%(asctime)s %(levelname)-8s %(message)s',

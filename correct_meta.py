@@ -58,7 +58,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Correct xml for ctd dataset')
     parser.add_argument('dataset_id', type=str, help='dataset id')
     args = parser.parse_args()
-    logf = f'/data/log/ctd.log'
+    logf = f'/data/log/meta.log'
     logging.basicConfig(filename=logf,
                         filemode='a',
                         format='%(asctime)s %(levelname)-8s %(message)s',
