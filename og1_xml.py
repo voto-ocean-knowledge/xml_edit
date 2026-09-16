@@ -27,11 +27,11 @@ def update_doc(glider, mission, kind):
     :param kind: nrt or complete
     :return: 
     """
-    document_loc = f"/home/usrerddap/erddap/xml_edit/xml/OG1_{kind}_{glider}_M{mission}.xml"
+    document_loc = f"/home/usrerddap/erddap/xml_edit/xml/OG_{kind}_{glider}_M{mission}.xml"
     tree = ET.parse(document_loc)
     root = tree.getroot()
     # Update dataset name
-    ds_name = f"OG1_{kind}_{glider}_M{mission}"
+    ds_name = f"OG_{kind}_{glider}_M{mission}"
     root.attrib["datasetID"] = ds_name
     for child in root:
         # fix for addAttributes
