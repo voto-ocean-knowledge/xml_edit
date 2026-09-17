@@ -30,11 +30,11 @@ def edit_add_attrs_og(adds):
     add_element(adds, "cdm_data_type", "Trajectory")
     add_element(adds, "cdm_trajectory_variables", "TRAJECTORY")
 
-def erddap_generate_xml(glider, mission):
+def erddap_generate_xml(glider, mission, file_dir):
     bash_cmd = fr"""
     set -e
     cd /usr/local/tomcat/webapps/erddap/WEB-INF/
-    java -cp classes:../../../lib/servlet-api.jar:lib/* -Xms6000M -Xmx6000M gov.noaa.pfel.erddap.GenerateDatasetsXml EDDTableFromMultidimNcFiles /Data/OG_complete/{glider}/M{mission}/timeseries .\* nothing default default default default default default default default default default default default default default default default
+    java -cp classes:../../../lib/servlet-api.jar:lib/* -Xms12000M -Xmx12000M gov.noaa.pfel.erddap.GenerateDatasetsXml EDDTableFromMultidimNcFiles /Data/{file_dir}/{glider}/M{mission}/timeseries .\* nothing default default default default default default default default default default default default default default default default
     """
 
 
@@ -52,8 +52,8 @@ def erddap_generate_xml(glider, mission):
         return True
 
 
-def convert_xml(glider, mission, kind):
-    data_dir = Path(f'/data/OG_complete/{glider}/M{mission}/timeseries')
+def convert_xml(glider, mission, file_dir):
+    data_dir = Path(f'/data/{file_dir}/{glider}/M{mission}/timeseries')
     if not data_dir.exists():
         print("no dir")
         return
@@ -103,9 +103,10 @@ def make_datasets_xml():
     tree.write(out, encoding="utf-8", xml_declaration=True)
 
 
-def process_all_og1(kind='delayed', days=3):
+def process_all_og1(kind='nrt', days=3):
     time_cut = datetime.datetime.now() - datetime.timedelta(days=days)
-    infiles = list(Path('/data/OG_complete/').rglob('*.nc'))
+    file_dir = 'OG_complete' if kind == 'delayed' else 'OG_nrt'
+    infiles = list(Path(f'/data/{file_dir}/').rglob('*.nc'))
     infiles = [file for file in infiles if 'timeseries' in str(file)]
     infiles.sort()
     for infile in infiles:
@@ -117,10 +118,10 @@ def process_all_og1(kind='delayed', days=3):
         last_proc_time = database.last_processed_time(mission_id)
         if last_proc_time > time_cut:
             continue
-        xml_generated = erddap_generate_xml(glider, mission)
+        xml_generated = erddap_generate_xml(glider, mission, file_dir)
         if not xml_generated:
             continue
-        convert_xml(glider, mission, 'delayed')
+        convert_xml(glider, mission, file_dir)
         database.update_processed_time(mission_id, datetime.datetime.now())
 
 
