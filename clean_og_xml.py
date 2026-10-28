@@ -124,6 +124,36 @@ def process_all_og1(kind='nrt', days=3):
         convert_xml(glider, mission, file_dir)
         database.update_processed_time(mission_id, datetime.datetime.now())
 
+def meta_generate_xml():
+    dataset_id = "meta_og1"
+    bash_cmd = fr"""
+    set -e
+    cd /usr/local/tomcat/webapps/erddap/WEB-INF/
+    bash GenerateDatasetsXml.sh EDDTableFromAsciiFiles /Data/meta meta_og1.csv nothing default default default \, default default default default default default default default default default default default default
+    """
+
+    result = subprocess.run(
+        ["docker", "exec", "-i", "voto-erddap-1", "bash", "-c", bash_cmd],
+        capture_output=True,
+        text=True,
+        check=True
+    )
+
+    output = result.stdout
+    if 'java.lang.RuntimeException' in output:
+        return False
+
+    document_loc = "/data/erddapDataNew/logs/GenerateDatasetsXml.out"
+    tree = ET.parse(document_loc)
+    root = tree.getroot()
+    root.attrib["datasetID"] = dataset_id
+    # fix indentation and write xml
+
+    ET.indent(tree, '  ')
+    out = f"/home/usrerddap/erddap_compose/erddap/content/parts/{dataset_id}.xml"
+    tree.write(out, encoding="utf-8", xml_declaration=True)
+    return True
+
 
 if __name__ == '__main__':
     process_all_og1()
