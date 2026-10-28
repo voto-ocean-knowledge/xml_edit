@@ -4,6 +4,7 @@ import xarray as xr
 import datetime
 from pathlib import Path
 import database
+import argparse
 
 
 def add_element(tree, name, text):
@@ -155,6 +156,27 @@ def meta_generate_xml():
     return True
 
 
-if __name__ == '__main__':
-    process_all_og1()
+
+def main():
+    parser = argparse.ArgumentParser(description="Generate ERDDAP dataset xml and rebuild datasets.xml")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    og1_parser = subparsers.add_parser("og1", help="generate xml for OG1 timeseries files (process_all_og1)")
+    og1_parser.add_argument("--kind", choices=["nrt", "delayed"], default="nrt",
+                            help="type of dataset to process (default: nrt)")
+    og1_parser.add_argument("--days", type=float, default=3,
+                            help="skip datasets processed within this many days (default: 3)")
+
+    subparsers.add_parser("meta", help="generate xml for the meta_og1 metadata table (meta_generate_xml)")
+
+    args = parser.parse_args()
+    if args.command == "og1":
+        process_all_og1(kind=args.kind, days=args.days)
+    elif args.command == "meta":
+        if not meta_generate_xml():
+            sys.exit("GenerateDatasetsXml failed for meta_og1")
     make_datasets_xml()
+
+
+if __name__ == '__main__':
+    main()
